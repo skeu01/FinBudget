@@ -1,0 +1,22 @@
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+!frontend/.env.example
+
+# Build output and dependencies
+**/bin/
+**/obj/
+frontend/node_modules/
+frontend/dist/
+**/.vite/
+**/coverage/
+TestResults/
+
+# Local OCR uploads and IDE files
+src/Presentation/App_Data/
+.vs/
+.vscode/
+*.user
+*.suo
+*.log

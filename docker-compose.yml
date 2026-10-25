@@ -1,0 +1,60 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-familyfinance}
+      POSTGRES_USER: ${POSTGRES_USER:-familyfinance}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  api:
+    build:
+      context: .
+      dockerfile: src/Presentation/Dockerfile
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_HTTP_PORTS: 8080
+      ConnectionStrings__DefaultConnection: Host=postgres;Port=5432;Database=${POSTGRES_DB:-familyfinance};Username=${POSTGRES_USER:-familyfinance};Password=${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      Authentication__Jwt__Issuer: ${JWT_ISSUER:-FamilyFinance.Api}
+      Authentication__Jwt__Audience: ${JWT_AUDIENCE:-FamilyFinance.Client}
+      Authentication__Jwt__SigningKey: ${JWT_SIGNING_KEY:?Set JWT_SIGNING_KEY in .env}
+      Authentication__Jwt__AccessTokenMinutes: ${JWT_ACCESS_TOKEN_MINUTES:-15}
+      Database__ApplyMigrationsOnStartup: "true"
+      ReceiptOcr__Provider: ${OCR_PROVIDER:-Tesseract}
+      ReceiptOcr__StoragePath: /app/data/receipts
+      ReceiptOcr__AzureEndpoint: ${OCR_AZURE_ENDPOINT:-}
+      ReceiptOcr__AzureApiKey: ${OCR_AZURE_API_KEY:-}
+    ports:
+      - "${API_PORT:-8080}:8080"
+    volumes:
+      - receipt_data:/app/data/receipts
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api/v1}
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-8081}:80"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
+  receipt_data:

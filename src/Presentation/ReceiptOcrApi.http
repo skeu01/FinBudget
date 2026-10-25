@@ -1,0 +1,20 @@
+@baseUrl = https://localhost:7001
+@householdId = 00000000-0000-0000-0000-000000000001
+@receiptId = 00000000-0000-0000-0000-000000000002
+@accessToken = paste-access-token-here
+
+### Subir ticket o factura (JPEG, PNG o PDF)
+POST {{baseUrl}}/api/v1/households/{{householdId}}/receipts
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=ReceiptBoundary
+
+--ReceiptBoundary
+Content-Disposition: form-data; name="file"; filename="ticket.jpg"
+Content-Type: image/jpeg
+
+< ./ticket.jpg
+--ReceiptBoundary--
+
+### Consultar el resultado OCR más reciente
+GET {{baseUrl}}/api/v1/households/{{householdId}}/receipts/{{receiptId}}
+Authorization: Bearer {{accessToken}}

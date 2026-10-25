@@ -1,0 +1,206 @@
+@baseUrl = https://localhost:7001
+@accessToken = paste-access-token
+@householdId = 00000000-0000-0000-0000-000000000001
+@categoryId = 00000000-0000-0000-0000-000000000002
+@incomeCategoryId = 00000000-0000-0000-0000-000000000008
+@memberId = 00000000-0000-0000-0000-000000000003
+@expenseId = 00000000-0000-0000-0000-000000000004
+@incomeId = 00000000-0000-0000-0000-000000000005
+@budgetId = 00000000-0000-0000-0000-000000000006
+@goalId = 00000000-0000-0000-0000-000000000007
+
+### Current user profile
+GET {{baseUrl}}/api/v1/users/me
+Authorization: Bearer {{accessToken}}
+
+### Update current user profile
+PUT {{baseUrl}}/api/v1/users/me
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "displayName": "Family User" }
+
+### List users (requires users.manage)
+GET {{baseUrl}}/api/v1/users
+Authorization: Bearer {{accessToken}}
+
+### List households
+GET {{baseUrl}}/api/v1/households
+Authorization: Bearer {{accessToken}}
+
+### Create household
+POST {{baseUrl}}/api/v1/households
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "name": "Home", "currencyCode": "EUR", "timeZone": "Europe/Madrid" }
+
+### Get household
+GET {{baseUrl}}/api/v1/households/{{householdId}}
+Authorization: Bearer {{accessToken}}
+
+### Update household
+PUT {{baseUrl}}/api/v1/households/{{householdId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "name": "Family home" }
+
+### Archive household
+DELETE {{baseUrl}}/api/v1/households/{{householdId}}
+Authorization: Bearer {{accessToken}}
+
+### List household members
+GET {{baseUrl}}/api/v1/households/{{householdId}}/members
+Authorization: Bearer {{accessToken}}
+
+### Add household member (user must already exist; replace with that user's ID)
+POST {{baseUrl}}/api/v1/households/{{householdId}}/members
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "userId": "{{memberId}}", "role": "Member" }
+
+### Change member role
+PUT {{baseUrl}}/api/v1/households/{{householdId}}/members/{{memberId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "role": "Admin" }
+
+### Remove member
+DELETE {{baseUrl}}/api/v1/households/{{householdId}}/members/{{memberId}}
+Authorization: Bearer {{accessToken}}
+
+### List categories
+GET {{baseUrl}}/api/v1/households/{{householdId}}/categories
+Authorization: Bearer {{accessToken}}
+
+### Create expense category
+POST {{baseUrl}}/api/v1/households/{{householdId}}/categories
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "name": "Groceries", "kind": "Expense", "sortOrder": 1 }
+
+### Update category
+PUT {{baseUrl}}/api/v1/households/{{householdId}}/categories/{{categoryId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "name": "Food", "kind": "Expense", "sortOrder": 1 }
+
+### Deactivate category
+DELETE {{baseUrl}}/api/v1/households/{{householdId}}/categories/{{categoryId}}
+Authorization: Bearer {{accessToken}}
+
+### List expenses
+GET {{baseUrl}}/api/v1/households/{{householdId}}/expenses?from=2026-01-01&to=2026-01-31
+Authorization: Bearer {{accessToken}}
+
+### Create expense
+POST {{baseUrl}}/api/v1/households/{{householdId}}/expenses
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "categoryId": "{{categoryId}}", "amount": 45.20, "currencyCode": "EUR", "occurredOn": "2026-01-15", "merchant": "Market" }
+
+### Get expense
+GET {{baseUrl}}/api/v1/households/{{householdId}}/expenses/{{expenseId}}
+Authorization: Bearer {{accessToken}}
+
+### Update expense
+PUT {{baseUrl}}/api/v1/households/{{householdId}}/expenses/{{expenseId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "categoryId": "{{categoryId}}", "amount": 49.90, "currencyCode": "EUR", "occurredOn": "2026-01-15", "merchant": "Market" }
+
+### Delete expense
+DELETE {{baseUrl}}/api/v1/households/{{householdId}}/expenses/{{expenseId}}
+Authorization: Bearer {{accessToken}}
+
+### List incomes
+GET {{baseUrl}}/api/v1/households/{{householdId}}/incomes
+Authorization: Bearer {{accessToken}}
+
+### Create income (use a category whose kind is Income)
+POST {{baseUrl}}/api/v1/households/{{householdId}}/incomes
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "categoryId": "{{incomeCategoryId}}", "amount": 2500, "currencyCode": "EUR", "occurredOn": "2026-01-01", "source": "Salary" }
+
+### Get income
+GET {{baseUrl}}/api/v1/households/{{householdId}}/incomes/{{incomeId}}
+Authorization: Bearer {{accessToken}}
+
+### Update income
+PUT {{baseUrl}}/api/v1/households/{{householdId}}/incomes/{{incomeId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "categoryId": "{{incomeCategoryId}}", "amount": 2600, "currencyCode": "EUR", "occurredOn": "2026-01-01", "source": "Salary" }
+
+### Delete income
+DELETE {{baseUrl}}/api/v1/households/{{householdId}}/incomes/{{incomeId}}
+Authorization: Bearer {{accessToken}}
+
+### List monthly budgets
+GET {{baseUrl}}/api/v1/households/{{householdId}}/budgets?year=2026&month=1
+Authorization: Bearer {{accessToken}}
+
+### Create monthly budget
+POST {{baseUrl}}/api/v1/households/{{householdId}}/budgets
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "categoryId": "{{categoryId}}", "year": 2026, "month": 1, "amountLimit": 500, "alertThresholdPercent": 80, "currencyCode": "EUR" }
+
+### Update budget
+PUT {{baseUrl}}/api/v1/households/{{householdId}}/budgets/{{budgetId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "categoryId": "{{categoryId}}", "year": 2026, "month": 1, "amountLimit": 550, "alertThresholdPercent": 85, "currencyCode": "EUR" }
+
+### Delete budget
+DELETE {{baseUrl}}/api/v1/households/{{householdId}}/budgets/{{budgetId}}
+Authorization: Bearer {{accessToken}}
+
+### List savings goals
+GET {{baseUrl}}/api/v1/households/{{householdId}}/savings-goals
+Authorization: Bearer {{accessToken}}
+
+### Create savings goal
+POST {{baseUrl}}/api/v1/households/{{householdId}}/savings-goals
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "name": "Emergency fund", "targetAmount": 5000, "currencyCode": "EUR", "targetDate": "2027-12-31" }
+
+### Update savings goal
+PUT {{baseUrl}}/api/v1/households/{{householdId}}/savings-goals/{{goalId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "name": "Emergency fund", "targetAmount": 6000, "currencyCode": "EUR", "targetDate": "2027-12-31" }
+
+### Complete savings goal
+POST {{baseUrl}}/api/v1/households/{{householdId}}/savings-goals/{{goalId}}/complete
+Authorization: Bearer {{accessToken}}
+
+### Cancel savings goal
+POST {{baseUrl}}/api/v1/households/{{householdId}}/savings-goals/{{goalId}}/cancel
+Authorization: Bearer {{accessToken}}
+
+### List savings goal contributions
+GET {{baseUrl}}/api/v1/households/{{householdId}}/savings-goals/{{goalId}}/contributions
+Authorization: Bearer {{accessToken}}
+
+### Add savings goal contribution
+POST {{baseUrl}}/api/v1/households/{{householdId}}/savings-goals/{{goalId}}/contributions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{ "amount": 250, "currencyCode": "EUR", "contributedOn": "2026-01-15", "notes": "Monthly contribution" }
