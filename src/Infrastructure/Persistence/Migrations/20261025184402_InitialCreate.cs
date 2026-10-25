@@ -75,7 +75,7 @@ namespace Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_refresh_tokens", x => x.Id);
-                    table.CheckConstraint("ck_refresh_tokens_expiry_after_creation", "\"expires_at\" > \"created_at\"");
+                    table.CheckConstraint("ck_refresh_tokens_expiry_after_creation", "\"ExpiresAt\" > \"CreatedAt\"");
                     table.ForeignKey(
                         name: "FK_refresh_tokens_users_UserId",
                         column: x => x.UserId,
@@ -103,7 +103,7 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_categories", x => x.Id);
                     table.UniqueConstraint("AK_categories_HouseholdId_Id", x => new { x.HouseholdId, x.Id });
-                    table.CheckConstraint("ck_categories_not_own_parent", "\"parent_category_id\" IS NULL OR \"parent_category_id\" <> \"id\"");
+                    table.CheckConstraint("ck_categories_not_own_parent", "\"ParentCategoryId\" IS NULL OR \"ParentCategoryId\" <> \"Id\"");
                     table.ForeignKey(
                         name: "FK_categories_categories_HouseholdId_ParentCategoryId",
                         columns: x => new { x.HouseholdId, x.ParentCategoryId },
@@ -353,8 +353,8 @@ namespace Infrastructure.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_receipts", x => x.Id);
                     table.UniqueConstraint("AK_receipts_HouseholdId_Id", x => new { x.HouseholdId, x.Id });
-                    table.CheckConstraint("ck_receipts_single_transaction", "\"expense_id\" IS NULL OR \"income_id\" IS NULL");
-                    table.CheckConstraint("ck_receipts_size_positive", "\"size_bytes\" > 0");
+                    table.CheckConstraint("ck_receipts_single_transaction", "\"ExpenseId\" IS NULL OR \"IncomeId\" IS NULL");
+                    table.CheckConstraint("ck_receipts_size_positive", "\"SizeBytes\" > 0");
                     table.ForeignKey(
                         name: "FK_receipts_expenses_HouseholdId_ExpenseId",
                         columns: x => new { x.HouseholdId, x.ExpenseId },
@@ -445,7 +445,7 @@ namespace Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ocr_results", x => x.Id);
-                    table.CheckConstraint("ck_ocr_results_attempt_positive", "\"attempt_number\" > 0");
+                    table.CheckConstraint("ck_ocr_results_attempt_positive", "\"AttemptNumber\" > 0");
                     table.ForeignKey(
                         name: "FK_ocr_results_receipts_ReceiptId",
                         column: x => x.ReceiptId,
@@ -560,7 +560,7 @@ namespace Infrastructure.Persistence.Migrations
                 schema: "finance",
                 table: "receipts",
                 column: "ExpenseId",
-                filter: "\"expense_id\" IS NOT NULL");
+                filter: "\"ExpenseId\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_receipts_HouseholdId_ExpenseId",
@@ -591,7 +591,7 @@ namespace Infrastructure.Persistence.Migrations
                 schema: "finance",
                 table: "receipts",
                 column: "IncomeId",
-                filter: "\"income_id\" IS NOT NULL");
+                filter: "\"IncomeId\" IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_receipts_Sha256",

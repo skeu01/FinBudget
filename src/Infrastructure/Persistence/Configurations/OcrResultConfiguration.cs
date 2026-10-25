@@ -18,7 +18,7 @@ public sealed class OcrResultConfiguration : IEntityTypeConfiguration<OcrResult>
         builder.Property(result => result.ErrorCode).HasMaxLength(80);
         builder.Property(result => result.StartedAt).IsRequired();
         builder.Property(result => result.CompletedAt);
-        builder.ToTable(table => table.HasCheckConstraint("ck_ocr_results_attempt_positive", "\"attempt_number\" > 0"));
+        builder.ToTable(table => table.HasCheckConstraint("ck_ocr_results_attempt_positive", "\"AttemptNumber\" > 0"));
         builder.Property(result => result.ExtractedData)
             .HasConversion(
                 data => JsonSerializer.Serialize(data, (JsonSerializerOptions?)null),

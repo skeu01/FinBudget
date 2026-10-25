@@ -17,7 +17,7 @@ public sealed class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.Property(category => category.IsActive).IsRequired();
         builder.Property(category => category.SortOrder).IsRequired();
         builder.Property(category => category.CreatedAt).IsRequired();
-        builder.ToTable(table => table.HasCheckConstraint("ck_categories_not_own_parent", "\"parent_category_id\" IS NULL OR \"parent_category_id\" <> \"id\""));
+        builder.ToTable(table => table.HasCheckConstraint("ck_categories_not_own_parent", "\"ParentCategoryId\" IS NULL OR \"ParentCategoryId\" <> \"Id\""));
         builder.ConfigureHouseholdScope(nameof(Category.HouseholdId));
         builder.HasOne<Category>()
             .WithMany()

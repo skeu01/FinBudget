@@ -103,7 +103,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.ToTable("categories", "finance", t =>
                         {
-                            t.HasCheckConstraint("ck_categories_not_own_parent", "\"parent_category_id\" IS NULL OR \"parent_category_id\" <> \"id\"");
+                            t.HasCheckConstraint("ck_categories_not_own_parent", "\"ParentCategoryId\" IS NULL OR \"ParentCategoryId\" <> \"Id\"");
                         });
                 });
 
@@ -328,7 +328,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.ToTable("ocr_results", "finance", t =>
                         {
-                            t.HasCheckConstraint("ck_ocr_results_attempt_positive", "\"attempt_number\" > 0");
+                            t.HasCheckConstraint("ck_ocr_results_attempt_positive", "\"AttemptNumber\" > 0");
                         });
                 });
 
@@ -388,10 +388,10 @@ namespace Infrastructure.Persistence.Migrations
                     b.HasAlternateKey("HouseholdId", "Id");
 
                     b.HasIndex("ExpenseId")
-                        .HasFilter("\"expense_id\" IS NOT NULL");
+                        .HasFilter("\"ExpenseId\" IS NOT NULL");
 
                     b.HasIndex("IncomeId")
-                        .HasFilter("\"income_id\" IS NOT NULL");
+                        .HasFilter("\"IncomeId\" IS NOT NULL");
 
                     b.HasIndex("Sha256");
 
@@ -408,9 +408,9 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.ToTable("receipts", "finance", t =>
                         {
-                            t.HasCheckConstraint("ck_receipts_single_transaction", "\"expense_id\" IS NULL OR \"income_id\" IS NULL");
+                            t.HasCheckConstraint("ck_receipts_single_transaction", "\"ExpenseId\" IS NULL OR \"IncomeId\" IS NULL");
 
-                            t.HasCheckConstraint("ck_receipts_size_positive", "\"size_bytes\" > 0");
+                            t.HasCheckConstraint("ck_receipts_size_positive", "\"SizeBytes\" > 0");
                         });
                 });
 
@@ -457,7 +457,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.ToTable("refresh_tokens", "finance", t =>
                         {
-                            t.HasCheckConstraint("ck_refresh_tokens_expiry_after_creation", "\"expires_at\" > \"created_at\"");
+                            t.HasCheckConstraint("ck_refresh_tokens_expiry_after_creation", "\"ExpiresAt\" > \"CreatedAt\"");
                         });
                 });
 

@@ -26,6 +26,6 @@ public sealed class RefreshTokenConfiguration : IEntityTypeConfiguration<Refresh
             .OnDelete(DeleteBehavior.Cascade);
         builder.ToTable(table => table.HasCheckConstraint(
             "ck_refresh_tokens_expiry_after_creation",
-            "\"expires_at\" > \"created_at\""));
+            "\"ExpiresAt\" > \"CreatedAt\""));
     }
 }

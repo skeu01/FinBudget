@@ -13,8 +13,8 @@ public sealed class ReceiptConfiguration : IEntityTypeConfiguration<Receipt>
         builder.HasIndex(receipt => receipt.StorageKey).IsUnique();
         builder.HasIndex(receipt => new { receipt.HouseholdId, receipt.Status, receipt.UploadedAt });
         builder.HasIndex(receipt => receipt.Sha256);
-        builder.HasIndex(receipt => receipt.ExpenseId).HasFilter("\"expense_id\" IS NOT NULL");
-        builder.HasIndex(receipt => receipt.IncomeId).HasFilter("\"income_id\" IS NOT NULL");
+        builder.HasIndex(receipt => receipt.ExpenseId).HasFilter("\"ExpenseId\" IS NOT NULL");
+        builder.HasIndex(receipt => receipt.IncomeId).HasFilter("\"IncomeId\" IS NOT NULL");
         builder.Property(receipt => receipt.StorageKey).IsRequired();
         builder.Property(receipt => receipt.OriginalFilename).HasMaxLength(255).IsRequired();
         builder.Property(receipt => receipt.MediaType).HasMaxLength(100).IsRequired();
@@ -25,8 +25,8 @@ public sealed class ReceiptConfiguration : IEntityTypeConfiguration<Receipt>
         builder.Property(receipt => receipt.DeletedAt);
         builder.ToTable(table =>
         {
-            table.HasCheckConstraint("ck_receipts_size_positive", "\"size_bytes\" > 0");
-            table.HasCheckConstraint("ck_receipts_single_transaction", "\"expense_id\" IS NULL OR \"income_id\" IS NULL");
+            table.HasCheckConstraint("ck_receipts_size_positive", "\"SizeBytes\" > 0");
+            table.HasCheckConstraint("ck_receipts_single_transaction", "\"ExpenseId\" IS NULL OR \"IncomeId\" IS NULL");
         });
         builder.ConfigureHouseholdScope(nameof(Receipt.HouseholdId));
         builder.HasOne<HouseholdMember>()
