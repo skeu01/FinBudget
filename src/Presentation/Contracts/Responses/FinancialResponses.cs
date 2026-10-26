@@ -41,7 +41,8 @@ public sealed record ExpenseResponse(
     string? Description,
     string? Merchant,
     string? Notes,
-    Guid CreatedByMemberId);
+    Guid CreatedByMemberId,
+    IReadOnlyList<Domain.ValueObjects.ExpenseItem>? Items);
 
 /// <summary>Ingreso registrado en un hogar.</summary>
 public sealed record IncomeResponse(

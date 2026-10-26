@@ -29,7 +29,7 @@ public sealed class FinanceControllerTests
         var service = new Mock<IFinancialApiService>();
         service.Setup(mock => mock.CreateExpenseAsync(userId, householdId, request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ExpenseResponse(expenseId, request.CategoryId, request.Amount, "EUR",
-                request.OccurredOn, null, null, null, Guid.NewGuid()));
+                request.OccurredOn, null, null, null, Guid.NewGuid(), null));
         var controller = new ExpensesController(service.Object);
         SetUser(controller, userId);
 
