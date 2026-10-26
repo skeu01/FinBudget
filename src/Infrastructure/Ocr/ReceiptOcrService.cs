@@ -166,6 +166,7 @@ public sealed class ReceiptOcrService(
             result.AttemptNumber,
             data?.OccurredOn,
             data?.Merchant,
+            data?.ItemDetails ?? [],
             data?.Total?.Amount,
             data?.Vat?.Amount,
             currency,

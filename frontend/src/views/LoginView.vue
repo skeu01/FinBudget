@@ -34,7 +34,7 @@ async function submit() {
     <section class="auth-art">
       <RouterLink to="/login" class="brand brand--light">
         <span class="brand__mark"><House :size="19" /></span>
-        <span class="brand__name">casa<span>clara</span><small>FINANZAS EN FAMILIA</small></span>
+        <span class="brand__name">Fin<span>Budget</span><small>FINANZAS EN FAMILIA</small></span>
       </RouterLink>
       <div class="auth-art__content">
         <span class="auth-art__eyebrow"><Sparkles :size="15" /> UN POCO MÁS DE CLARIDAD</span>
@@ -50,7 +50,7 @@ async function submit() {
       <div class="auth-form-wrap">
         <div class="auth-mobile-brand brand">
           <span class="brand__mark"><House :size="19" /></span>
-          <span class="brand__name">casa<span>clara</span></span>
+          <span class="brand__name">Fin<span>Budget</span></span>
         </div>
         <div class="auth-heading">
           <span class="auth-kicker">QUÉ BUENO TENERTE DE VUELTA</span>
@@ -71,7 +71,7 @@ async function submit() {
         <p class="auth-switch">¿Aún no tienes cuenta? <RouterLink to="/registro">Crea tu cuenta</RouterLink></p>
         <p class="auth-privacy"><ShieldCheck :size="15" /> Tu información financiera siempre es privada.</p>
       </div>
-      <span class="auth-copyright">© {{ new Date().getFullYear() }} Casa Clara · Un hogar, un plan.</span>
+      <span class="auth-copyright">© {{ new Date().getFullYear() }} FinBudget · Un hogar, un plan.</span>
     </section>
   </div>
 </template>

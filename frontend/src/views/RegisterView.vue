@@ -34,7 +34,7 @@ async function submit() {
     <section class="auth-art">
       <RouterLink to="/login" class="brand brand--light">
         <span class="brand__mark"><House :size="19" /></span>
-        <span class="brand__name">casa<span>clara</span><small>FINANZAS EN FAMILIA</small></span>
+        <span class="brand__name">Fin<span>Budget</span><small>FINANZAS EN FAMILIA</small></span>
       </RouterLink>
       <div class="auth-art__content">
         <span class="auth-art__eyebrow"><Sparkles :size="15" /> UN NUEVO COMIENZO</span>
@@ -47,7 +47,7 @@ async function submit() {
     </section>
     <section class="auth-form-side">
       <div class="auth-form-wrap">
-        <div class="auth-mobile-brand brand"><span class="brand__mark"><House :size="19" /></span><span class="brand__name">casa<span>clara</span></span></div>
+        <div class="auth-mobile-brand brand"><span class="brand__mark"><House :size="19" /></span><span class="brand__name">Fin<span>Budget</span></span></div>
         <div class="auth-heading">
           <span class="auth-kicker">TU ESPACIO EMPIEZA AQUÍ</span>
           <h2>Crea tu cuenta</h2>
@@ -70,7 +70,7 @@ async function submit() {
         <p class="auth-switch">¿Ya tienes una cuenta? <RouterLink to="/login">Inicia sesión</RouterLink></p>
         <p class="auth-privacy"><ShieldCheck :size="15" /> Tus datos nunca se comparten.</p>
       </div>
-      <span class="auth-copyright">© {{ new Date().getFullYear() }} Casa Clara · Un hogar, un plan.</span>
+      <span class="auth-copyright">© {{ new Date().getFullYear() }} FinBudget · Un hogar, un plan.</span>
     </section>
   </div>
 </template>

@@ -24,6 +24,15 @@ internal static partial class OcrTextParser
     [GeneratedRegex(@"\b(?:iva|vat|impuesto(?:s)?)\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex VatLabelPattern();
 
+    [GeneratedRegex(@"\b(?:base\s+imponible|cuota)\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex VatBreakdownHeaderPattern();
+
+    [GeneratedRegex(@"\bdescripci[oó]n\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex ItemsHeaderPattern();
+
+    [GeneratedRegex(@"^\s*(?<quantity>\d+(?:[.,]\d+)?)\s+(?<description>.+?)\s+(?<amounts>\d+(?:[.,]\d{1,2})?(?:\s+\d+(?:[.,]\d{1,2})?)?)\s*$", RegexOptions.CultureInvariant)]
+    private static partial Regex ItemLinePattern();
+
     public static OcrExtractedData Parse(string text, CurrencyCode currency, decimal? confidence)
     {
         var lines = text.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
@@ -33,11 +42,48 @@ internal static partial class OcrTextParser
 
         var occurredOn = FindDate(string.Join(Environment.NewLine, lines));
         var merchant = FindMerchant(lines);
-        var total = FindAmount(lines, TotalLabelPattern(), currency, skipVatLines: true);
-        var vat = FindAmount(lines, VatLabelPattern(), currency, skipVatLines: false);
+        var vatBreakdownStart = Array.FindIndex(lines, line => VatBreakdownHeaderPattern().IsMatch(line));
+        var total = FindTotal(lines, vatBreakdownStart, currency);
+        var vat = FindVat(lines, vatBreakdownStart, currency);
+        var itemDetails = FindItems(lines);
+        var items = itemDetails.Select(item => item.Description).ToArray();
         var confidenceValue = confidence is > 0 and <= 100 ? new Percentage(confidence.Value) : null;
 
-        return new OcrExtractedData(merchant, occurredOn, total, confidenceValue, vat);
+        return new OcrExtractedData(merchant, occurredOn, total, confidenceValue, vat, items, itemDetails);
+    }
+
+    private static IReadOnlyList<ExpenseItem> FindItems(string[] lines)
+    {
+        var headerIndex = Array.FindIndex(lines, line => ItemsHeaderPattern().IsMatch(line));
+        if (headerIndex < 0)
+        {
+            return [];
+        }
+
+        var items = new List<ExpenseItem>();
+        foreach (var line in lines.Skip(headerIndex + 1))
+        {
+            if (TotalLabelPattern().IsMatch(line))
+            {
+                break;
+            }
+
+            var match = ItemLinePattern().Match(line);
+            if (!match.Success)
+            {
+                continue;
+            }
+
+            var description = match.Groups["description"].Value.Trim();
+            var quantity = TryParseAmount(match.Groups["quantity"].Value);
+            var price = FindLastAmount(match.Groups["amounts"].Value);
+            if (description.Length > 0 && quantity is > 0 && price is > 0)
+            {
+                items.Add(new ExpenseItem(description, quantity.Value, price.Value));
+            }
+        }
+
+        return items;
     }
 
     private static DateOnly? FindDate(string text)
@@ -68,21 +114,42 @@ internal static partial class OcrTextParser
             line.Any(char.IsLetter));
     }
 
-    private static Money? FindAmount(
-        IEnumerable<string> lines,
-        Regex labelPattern,
-        CurrencyCode currency,
-        bool skipVatLines)
+    private static Money? FindTotal(string[] lines, int vatBreakdownStart, CurrencyCode currency)
     {
         var candidates = lines
-            .Where(line => labelPattern.IsMatch(line))
-            .Where(line => !skipVatLines || !VatLabelPattern().IsMatch(line))
-            .Where(line => !line.Contains("subtotal", StringComparison.OrdinalIgnoreCase))
-            .Select(line => FindLastAmount(line))
+            .Select((line, index) => (line, index))
+            .Where(item => vatBreakdownStart < 0 || item.index < vatBreakdownStart)
+            .Where(item => TotalLabelPattern().IsMatch(item.line))
+            .Where(item => !VatLabelPattern().IsMatch(item.line))
+            .Where(item => !item.line.Contains("subtotal", StringComparison.OrdinalIgnoreCase))
+            .Select(item => FindLastAmount(item.line))
             .Where(amount => amount.HasValue)
             .ToArray();
 
         return candidates.Length == 0 ? null : new Money(candidates[^1]!.Value, currency);
+    }
+
+    private static Money? FindVat(string[] lines, int vatBreakdownStart, CurrencyCode currency)
+    {
+        if (vatBreakdownStart >= 0)
+        {
+            var vatTotal = lines
+                .Skip(vatBreakdownStart + 1)
+                .Where(line => TotalLabelPattern().IsMatch(line))
+                .Select(FindLastAmount)
+                .FirstOrDefault(amount => amount.HasValue);
+            if (vatTotal.HasValue)
+            {
+                return new Money(vatTotal.Value, currency);
+            }
+        }
+
+        var vat = lines
+            .Where(line => VatLabelPattern().IsMatch(line))
+            .Select(FindLastAmount)
+            .LastOrDefault(amount => amount.HasValue);
+
+        return vat.HasValue ? new Money(vat.Value, currency) : null;
     }
 
     private static decimal? FindLastAmount(string line)

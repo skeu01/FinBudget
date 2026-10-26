@@ -116,6 +116,7 @@ onBeforeUnmount(() => {
             <div class="ocr-field"><span>IMPORTE</span><strong>{{ result.total !== null ? currency(result.total, result.currency) : 'No detectado' }}</strong></div>
             <div class="ocr-field"><span>IVA</span><strong>{{ result.vat !== null ? currency(result.vat, result.currency) : 'No detectado' }}</strong></div>
           </div>
+          <div v-if="result.ocrStatus === 'Succeeded' && result.items?.length" class="ocr-items"><strong>ARTÍCULOS</strong><span v-for="item in result.items" :key="`${item.description}-${item.quantity}`">{{ item.description }} · {{ item.quantity }} × {{ currency(item.price, result.currency) }}</span></div>
           <p v-if="result.ocrStatus !== 'Succeeded'" class="ocr-result__error">Código de error: {{ result.errorCode || result.ocrStatus }}. Puedes intentarlo con otra imagen más nítida.</p>
           <div v-if="result.ocrStatus === 'Succeeded'" class="ocr-review-note"><Sparkles :size="15" /> Revisa los datos antes de registrar el gasto. El OCR puede cometer errores.</div>
           <div class="ocr-result__actions"><UiButton variant="secondary" @click="reset"><RotateCcw :size="15" /> Leer otro ticket</UiButton><span v-if="result.confidence" class="confidence-pill">Confianza {{ Math.round(result.confidence) }}%</span></div>

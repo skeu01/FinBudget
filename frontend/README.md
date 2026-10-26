@@ -1,4 +1,4 @@
-# Casa Clara — frontend
+# FinBudget — frontend
 
 Aplicación Vue 3 + TypeScript para las finanzas familiares. Usa Composition API, Pinia, Vue Router, Axios y Tailwind CSS.
 
@@ -33,5 +33,5 @@ En producción, sirve el contenido de `dist/` y configura el servidor web para q
 - Resumen financiero del hogar
 - Gastos e ingresos
 - Presupuestos por mes
-- Carga y revisión de resultados OCR para imagen/PDF
+- Lectura OCR de tickets e importación de gastos con artículos estructurados y cantidades
 - Perfil, hogar y categorías

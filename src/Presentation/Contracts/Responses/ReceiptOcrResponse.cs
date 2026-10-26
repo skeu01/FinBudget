@@ -15,6 +15,7 @@ public sealed record ReceiptOcrResponse(
     int AttemptNumber,
     DateOnly? OccurredOn,
     string? Merchant,
+    IReadOnlyList<Domain.ValueObjects.ExpenseItem> Items,
     decimal? Total,
     decimal? Vat,
     string Currency,

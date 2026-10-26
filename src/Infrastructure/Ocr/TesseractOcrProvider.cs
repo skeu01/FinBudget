@@ -147,9 +147,10 @@ public sealed class TesseractOcrProvider(IOptions<ReceiptOcrOptions> options) : 
         return output;
     }
 
-    private static OcrDocumentText ParseTsv(string tsv)
+    internal static OcrDocumentText ParseTsv(string tsv)
     {
         var text = new StringBuilder();
+        string? currentLine = null;
         decimal totalConfidence = 0;
         var recognizedWords = 0;
 
@@ -164,7 +165,16 @@ public sealed class TesseractOcrProvider(IOptions<ReceiptOcrOptions> options) : 
                 continue;
             }
 
-            if (text.Length > 0)
+            var lineKey = string.Join("\t", columns.Skip(1).Take(4));
+            if (!string.Equals(currentLine, lineKey, StringComparison.Ordinal))
+            {
+                if (text.Length > 0)
+                {
+                    text.AppendLine();
+                }
+                currentLine = lineKey;
+            }
+            else
             {
                 text.Append(' ');
             }

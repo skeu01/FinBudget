@@ -33,6 +33,13 @@ export interface Expense {
   merchant: string | null
   notes: string | null
   createdByMemberId: string
+  items?: ExpenseItem[] | null
+}
+
+export interface ExpenseItem {
+  description: string
+  quantity: number
+  price: number
 }
 
 export interface Income {
@@ -85,6 +92,7 @@ export interface ReceiptOcr {
   attemptNumber: number
   occurredOn: string | null
   merchant: string | null
+  items: ExpenseItem[]
   total: number | null
   vat: number | null
   currency: string

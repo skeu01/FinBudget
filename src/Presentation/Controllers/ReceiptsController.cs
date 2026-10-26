@@ -69,6 +69,7 @@ public sealed class ReceiptsController(IReceiptOcrService service) : ApiControll
             result.AttemptNumber,
             result.OccurredOn,
             result.Merchant,
+            result.Items,
             result.Total,
             result.Vat,
             result.Currency,

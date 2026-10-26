@@ -92,7 +92,7 @@ export const financeApi = {
     api.get<Budget[]>(householdPath(householdId, 'budgets'), { params: { year, month } }),
   savingsGoals: (householdId: string) =>
     api.get<SavingsGoal[]>(householdPath(householdId, 'savings-goals')),
-  saveExpense: (householdId: string, payload: Omit<Expense, 'id' | 'createdByMemberId'>, id?: string) =>
+  saveExpense: (householdId: string, payload: Omit<Expense, 'id' | 'createdByMemberId'> & { receiptId?: string }, id?: string) =>
     id
       ? api.put<Expense>(`${householdPath(householdId, 'expenses')}/${id}`, payload)
       : api.post<Expense>(householdPath(householdId, 'expenses'), payload),

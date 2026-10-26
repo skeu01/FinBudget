@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Domain.Enums;
 using FluentAssertions;
 using Infrastructure.Ocr;
+using Domain.ValueObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -79,6 +80,6 @@ public sealed class ReceiptsControllerTests
 
     private static ReceiptOcrSnapshot Snapshot(Guid id, Guid householdId, OcrStatus status, string? errorCode) =>
         new(id, householdId, "receipt.pdf", "application/pdf", 12, "NeedsReview", "Tesseract", status,
-            1, new DateOnly(2026, 10, 25), "Market", 25.50m, 2.10m, "EUR", 95, errorCode,
+            1, new DateOnly(2026, 10, 25), "Market", [new ExpenseItem("Milk", 1, 2.50m)], 25.50m, 2.10m, "EUR", 95, errorCode,
             DateTimeOffset.UtcNow);
 }

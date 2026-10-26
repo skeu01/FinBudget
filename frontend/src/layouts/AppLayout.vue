@@ -82,7 +82,7 @@ async function logout() {
     <aside class="sidebar" :class="{ 'sidebar--open': sidebarOpen }">
       <RouterLink to="/" class="brand">
         <span class="brand__mark"><House :size="19" stroke-width="2.4" /></span>
-        <span class="brand__name">casa<span>clara</span><small>FINANZAS EN FAMILIA</small></span>
+        <span class="brand__name">Fin<span>Budget</span><small>FINANZAS EN FAMILIA</small></span>
       </RouterLink>
 
       <div class="household-picker">
@@ -143,7 +143,7 @@ async function logout() {
         <div v-if="toast" class="toast" role="alert"><span>{{ toast }}</span><button aria-label="Cerrar aviso" @click="toast = ''"><X :size="16" /></button></div>
         <RouterView />
       </main>
-      <footer class="app-footer"><span>Hecho para vivir con más calma.</span><span>casa clara <span class="footer-dot">·</span> {{ new Date().getFullYear() }}</span></footer>
+      <footer class="app-footer"><span>Hecho para vivir con más calma.</span><span>FinBudget <span class="footer-dot">·</span> {{ new Date().getFullYear() }}</span></footer>
     </div>
   </div>
 </template>

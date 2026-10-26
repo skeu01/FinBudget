@@ -11,7 +11,9 @@ public sealed record OcrExtractedData
         DateOnly? occurredOn,
         Money? total,
         Percentage? confidence,
-        Money? vat = null)
+        Money? vat = null,
+        IReadOnlyList<string>? items = null,
+        IReadOnlyList<ExpenseItem>? itemDetails = null)
     {
         if (total is not null && vat is not null && total.Currency != vat.Currency)
         {
@@ -23,6 +25,11 @@ public sealed record OcrExtractedData
         Total = total;
         Confidence = confidence;
         Vat = vat;
+        Items = items?
+            .Where(item => !string.IsNullOrWhiteSpace(item))
+            .Select(item => item.Trim())
+            .ToArray() ?? [];
+        ItemDetails = itemDetails?.ToArray() ?? [];
     }
 
     public string? Merchant { get; private set; }
@@ -34,4 +41,8 @@ public sealed record OcrExtractedData
     public Percentage? Confidence { get; private set; }
 
     public Money? Vat { get; private set; }
+
+    public IReadOnlyList<string> Items { get; private set; } = [];
+
+    public IReadOnlyList<ExpenseItem> ItemDetails { get; private set; } = [];
 }

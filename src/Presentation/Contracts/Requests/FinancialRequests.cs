@@ -75,7 +75,12 @@ public sealed record SaveExpenseRequest
     [Required]
     public DateOnly OccurredOn { get; init; }
 
-    [StringLength(200)]
+    public Guid? ReceiptId { get; init; }
+
+    [MaxLength(500)]
+    public IReadOnlyList<Domain.ValueObjects.ExpenseItem>? Items { get; init; }
+
+    [StringLength(2000)]
     public string? Description { get; init; }
 
     [StringLength(160)]

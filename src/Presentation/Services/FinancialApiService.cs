@@ -201,7 +201,18 @@ public sealed class FinancialApiService(FinancialDbContext db) : IFinancialApiSe
         EnsureCurrency(household.Currency, request.CurrencyCode);
         var entity = new Expense(householdId, category.Id, member.Id,
             new Money(request.Amount, household.Currency), request.OccurredOn,
-            request.Description, request.Merchant, request.Notes);
+            request.Description, request.Merchant, request.Notes, request.Items);
+        if (request.ReceiptId is { } receiptId)
+        {
+            var receipt = await db.Receipts.SingleOrDefaultAsync(
+                item => item.Id == receiptId &&
+                        item.HouseholdId == householdId &&
+                        item.Status == ReceiptStatus.NeedsReview,
+                ct)
+                ?? throw new InvalidOperationException("The receipt is not available to confirm for this expense.");
+            receipt.ConfirmForExpense(entity.Id);
+        }
+
         await db.Expenses.AddAsync(entity, ct);
         await db.SaveChangesAsync(ct);
         return Map(entity);
@@ -216,7 +227,7 @@ public sealed class FinancialApiService(FinancialDbContext db) : IFinancialApiSe
         var category = await RequireCategoryKindAsync(householdId, request.CategoryId, CategoryKind.Expense, ct);
         EnsureCurrency(household.Currency, request.CurrencyCode);
         entity.Update(category.Id, new Money(request.Amount, household.Currency), request.OccurredOn,
-            request.Description, request.Merchant, request.Notes);
+            request.Description, request.Merchant, request.Notes, request.Items);
         await db.SaveChangesAsync(ct);
         return Map(entity);
     }
@@ -541,7 +552,7 @@ public sealed class FinancialApiService(FinancialDbContext db) : IFinancialApiSe
         new(member.Id, user.Id, user.Email.Value, user.DisplayName, member.Role.ToString(), member.Status.ToString(), member.JoinedAt);
     private static CategoryResponse Map(Category x) => new(x.Id, x.ParentCategoryId, x.Name, x.Kind.ToString(), x.IsActive, x.SortOrder);
     private static ExpenseResponse Map(Expense x) =>
-        new(x.Id, x.CategoryId, x.Amount.Amount, x.Amount.Currency.Value, x.OccurredOn, x.Description, x.Merchant, x.Notes, x.CreatedByMemberId);
+        new(x.Id, x.CategoryId, x.Amount.Amount, x.Amount.Currency.Value, x.OccurredOn, x.Description, x.Merchant, x.Notes, x.CreatedByMemberId, x.Items);
     private static IncomeResponse Map(Income x) =>
         new(x.Id, x.CategoryId, x.Amount.Amount, x.Amount.Currency.Value, x.OccurredOn, x.Description, x.Source, x.Notes, x.CreatedByMemberId);
     private static BudgetResponse Map(Budget x, decimal spent) =>

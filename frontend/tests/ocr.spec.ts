@@ -31,6 +31,7 @@ describe('receipt OCR view', () => {
         provider: 'Tesseract',
         uploadedAt: '2026-10-25T10:00:00Z',
         merchant: 'Mercado',
+        items: [],
         occurredOn: '2026-10-25',
         total: 25.5,
         vat: 2.1,

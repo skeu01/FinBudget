@@ -33,6 +33,7 @@ public sealed record ReceiptOcrSnapshot(
     int AttemptNumber,
     DateOnly? OccurredOn,
     string? Merchant,
+    IReadOnlyList<ExpenseItem> Items,
     decimal? Total,
     decimal? Vat,
     string Currency,
